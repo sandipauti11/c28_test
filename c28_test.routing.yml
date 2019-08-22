@@ -1,0 +1,8 @@
+c28_test.api_key:
+    path: '/page-json/{api_key}/{nid}'
+    defaults:
+        _controller: 'Drupal\c28_test\Controller\TestController::content'
+        _title: 'Test page'
+    requirements:
+        _custom_access: '\Drupal\c28_test\Controller\TestController::access'
+        

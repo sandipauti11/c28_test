@@ -1,0 +1,37 @@
+<?php
+
+/**
+ * @file
+ * Contains c28_test.module.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+
+/**
+ * Implements hook_form_alter().
+ */
+function c28_test_form_alter(array &$form, FormStateInterface $form_state, $form_id) {
+  if ($form_id == 'system_site_information_settings') {
+    $api_key = \Drupal::configFactory()->getEditable('system.site')->get('siteapikey');
+    $form['site_api_key'] = [
+      '#title' => t('Site API Key'),
+      '#type' => 'textfield',
+      '#default_value' => $api_key ? $api_key : t('No API Key yet')  
+    ];
+    $form['actions']['submit']['#submit'][] = 'submit_api_key';
+    if(!empty($api_key)) {
+      $form['actions']['submit']['#value'] = t('Update Configuration');
+    }
+  }
+}
+
+/**
+ * Custom submit handler to submit api key
+ */
+function submit_api_key($form, FormStateInterface $form_state) {
+  $api_key = $form_state->getValue('site_api_key');
+  \Drupal::configFactory()->getEditable('system.site')
+    ->set('siteapikey', $api_key)
+    ->save(); 
+ drupal_set_message('Site api key has been saved with value '. $api_key);
+} 
